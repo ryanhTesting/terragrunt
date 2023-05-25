@@ -18,9 +18,9 @@ jobs:
   plan:
     uses: ./.github/workflows/reusable.yml
     with:
-      azure_client_id: ${{secrets.CLIENT_ID}}
-      azure_tenant_id: ${{secrets.TENENT_ID}}
-      azure_subscription_id: ${{secrets.CLIENT_SECRET}}
+      azure_client_id: ${{ secrets.APP_ID }}
+      azure_tenant_id: ${{ secrets.TENENT_ID }}
+      azure_subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
       config-path: "."
       terraform-version: "1.3.2"
     secrets:
