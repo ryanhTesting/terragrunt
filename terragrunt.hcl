@@ -13,7 +13,7 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents = <<EOF
 provider "azurerm" {
-  region = "eastus"
+  features {}
 }
 EOF
 }
