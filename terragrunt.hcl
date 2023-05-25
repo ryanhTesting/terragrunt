@@ -12,7 +12,7 @@ generate "provider" {
   path = "provider.tf"
   if_exists = "overwrite_terragrunt"
   contents = <<EOF
-provider "azure" {
+provider "azurerm" {
   region = "eastus"
 }
 EOF
