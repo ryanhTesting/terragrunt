@@ -8,15 +8,6 @@ on:
         AZURE_STORAGE_ACCOUNT_ACCESS_KEY:
           required: false
           type: string
-        azure_client_id:
-          required: true
-          type: string
-        azure_tenant_id:
-          required: true
-          type: string
-        azure_subscription_id:
-          required: true
-          type: string
         config-path:
           required: true
           type: string
@@ -25,14 +16,20 @@ on:
           type: string
           default: 0.14.7
       secrets:
-        token:
+        azure_client_secret:
+          required: true
+        azure_client_id:
+          required: true
+        azure_tenant_id:
+          required: true
+        azure_subscription_id:
           required: true
 
 env:
-  ARM_CLIENT_ID: ${{ inputs.CLIENT_ID }}
-  ARM_CLIENT_SECRET: ${{ secrets.token }}
-  ARM_SUBSCRIPTION_ID: ${{ inputs.SUBSCRIPTION_ID }}
-  ARM_TENANT_ID: ${{ inputs.TENANT_ID }}
+  ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
+  ARM_CLIENT_SECRET: ${{ secrets.azure_client_secret }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
+  ARM_TENANT_ID: ${{ inputs.azure_tenant_id }}
 
 jobs:
   terraform_format:
