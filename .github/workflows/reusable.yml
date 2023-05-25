@@ -66,8 +66,8 @@ jobs:
           output_format: cli
           config_file: .checkov.yaml
 
-      - name: Checkov Scan
-        run: checkov -d ${{ inputs.config-path }}
+#       - name: Checkov Scan
+#         run: checkov -d ${{ inputs.config-path }}
 
   terragrunt_plan:
     name: Terragrunt Plan
