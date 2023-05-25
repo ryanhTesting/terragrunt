@@ -96,5 +96,5 @@ jobs:
       - name: Run Checkov on plan
         uses: bridgecrewio/checkov-action@v12.2280.0
         with:
-          file: environments/dev/tfplan.json
+          file: tfplan.json
           output_format: cli
