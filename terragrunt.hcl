@@ -20,9 +20,9 @@ EOF
 
 # Indicate the input values to use for the variables of the module.
 inputs = {
-  resource_group_name = ansibleTesting
+  resource_group_name = "ansibleTesting"
   use_for_each = false
-  vnet_location = eastus
+  vnet_location = "eastus"
 
   tags = {
     Terraform = "true"
