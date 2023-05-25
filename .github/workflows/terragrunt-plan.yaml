@@ -1,0 +1,29 @@
+name: 'terraform-plan'
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+    
+
+jobs:
+  terraform:
+    name: 'test reusable workflow'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+  plan:
+    uses: ./.github/workflows/reusable.yml
+    with:
+      azure_client_id: " "
+      azure_tenant_id: " "
+      azure_subscription_id: " "
+      config-path: "."
+      terraform-version: "1.3.2"
+    secrets:
+      token: ${{ secrets.ARM_CLIENT_SECRET }}
+
+        
