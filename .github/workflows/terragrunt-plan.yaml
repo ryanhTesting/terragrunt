@@ -8,6 +8,11 @@ on:
   workflow_dispatch:
     
 
+env:
+  APP_ID: ${{ secrets.APP_ID }}
+  TENENT_ID: ${{ secrets.TENENT_ID }}
+  SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+
 jobs:
   terraform:
     name: 'test reusable workflow'
@@ -18,9 +23,9 @@ jobs:
   plan:
     uses: ./.github/workflows/reusable.yml
     with:
-      azure_client_id: ${{ secrets.APP_ID }}
-      azure_tenant_id: ${{ secrets.TENENT_ID }}
-      azure_subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
+      azure_client_id: ${{ env.APP_ID }}
+      azure_tenant_id: ${{ env.TENENT_ID }}
+      azure_subscription_id: ${{ env.SUBSCRIPTION_ID }}
       config-path: "."
       terraform-version: "1.3.2"
     secrets:
