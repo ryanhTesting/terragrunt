@@ -1,0 +1,103 @@
+# Reusable workflows that can be used in other workflows to perform a terraform plan
+
+name: Terragrunt Plan w/ az login and checkov
+
+on:
+    workflow_call:
+      inputs:
+        AZURE_STORAGE_ACCOUNT_ACCESS_KEY:
+          required: false
+          type: string
+        azure_client_id:
+          required: true
+          type: string
+        azure_tenant_id:
+          required: true
+          type: string
+        azure_subscription_id:
+          required: true
+          type: string
+        config-path:
+          required: true
+          type: string
+        terraform-version:
+          required: true
+          type: string
+          default: 0.14.7
+      secrets:
+        token:
+          required: true
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
+
+jobs:
+  terraform_format:
+    name: Terraform Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ inputs.terraform-version }}
+
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
+
+  checkov:
+    name: Checkov Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ inputs.terraform-version }}
+
+      - name: Run Checkov on TF directory
+        uses: bridgecrewio/checkov-action@v12.2280.0
+        with:
+          directory: ${{ inputs.config-path }}
+          output_format: cli
+          config_file: ../../.checkov.yaml
+
+      - name: Checkov Scan
+        run: checkov -d ${{ inputs.config-path }}
+
+  terragrunt_plan:
+    name: Terragrunt Plan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ inputs.terraform-version }}
+      
+      - name: Install Terragrunt
+        run: |
+          wget https://github.com/gruntwork-io/terragrunt/releases/download/v0.45.2/terragrunt_linux_amd64
+          mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
+          chmod +x /usr/local/bin/terragrunt
+
+      - name: Terragrunt plan
+        run: |
+          terragrunt init
+          terragrunt plan --terragrunt-non-interactive -out tfplan
+          terragrunt show -no-color -json tfplan > tfplan.json
+
+      - name: Run Checkov on plan
+        uses: bridgecrewio/checkov-action@v12.2280.0
+        with:
+          file: environments/dev/tfplan.json
+          output_format: cli
